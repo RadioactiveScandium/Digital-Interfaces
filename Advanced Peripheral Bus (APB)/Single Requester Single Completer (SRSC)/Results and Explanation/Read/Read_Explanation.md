@@ -2,7 +2,7 @@ The read transaction, similar to a write can be understood in following basic st
 
 1. As long as the signal `transfer` stays high, the transfer is valid and any transaction when this signal is low is deemed invalid
 2. Right when `transfer` signal goes high, the requester FSM goes to `SETUP` state from `IDLE`
-3. By now, the `PSEL` , `PWDATA`, `PADDR` and `PWRITE` (which is 0, denoting a Read transaction) are available
+3. By now, the `PSEL` , `PADDR` and `PWRITE` (which is 0, denoting a Read transaction) are available
 4. Exactly one clock cycle later, the FSM moves to `ACCESS` state
 5. In this state, `PENABLE` is asserted and the requester waits for `PREADY` to be asserted by the completer
 6. Once `PREADY` is asserted, the transaction is carried out
