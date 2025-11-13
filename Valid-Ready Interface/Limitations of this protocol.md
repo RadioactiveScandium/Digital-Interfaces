@@ -1,3 +1,5 @@
+## The problem with valid-ready
+
 In a standard valid/ready handshake, the sender cannot send new data until it sees the ready signal from the receiver.
 
 * Sender -> (valid, data) -> Receiver
