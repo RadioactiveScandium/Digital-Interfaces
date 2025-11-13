@@ -6,4 +6,8 @@ In a standard valid/ready handshake, the sender cannot send new data until it se
 
 * Sender <- (ready) <- Receiver
 
-If the physical distance between the sender and receiver is long, or if there are many pipeline stages between them, it takes a long time for the ready signal to travel back. During this round-trip time, the sender is stalled, and the data link is idle, wasting potential bandwidth.
+If the physical distance between the sender and receiver is long, or if there are many pipeline stages between them, it takes a long time for the ready signal to travel back. During this round-trip time(_RTT_), the sender is stalled, and the data link is idle, wasting potential bandwidth.
+
+### The solution
+
+Use a credit-based solution to hide this RTT 
