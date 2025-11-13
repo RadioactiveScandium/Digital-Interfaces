@@ -86,6 +86,9 @@ always_ff @ (posedge clk or negedge rstn) begin : COMPLETER
             // however, assuming it's always ready is the standard way to model a high-performance sink.
             if(ready)
                   {data_rcvd,ready} <= {data_in,1'b1};   // this line is important - it is the logic which ensures that the Rx honors back-to-back transactions
+                                                         // on the other hand, if ready is deasserted in this condition, then the design is still functionally correct,
+                                                         // but theres's a perf penalty : maximum throughput of one transaction every two clock cycles, 
+                                                         // wasting significant bandwidth
             else
                   {data_rcvd,ready} <= {data_rcvd,ready};
          end
