@@ -100,6 +100,10 @@ logic [31:0]      reg_bank1;
 // Writing to the registers if : 
 //    1. State is IDLE 
 //    2. All handshakes are done
+//
+// From the point the s_axi_wvalid goes high, it takes 2 clock cycles for the data to be physically written
+// into the reguisters, because of two events : 1, the W channel handshake (line 92) and 2, the write enable 
+// evaluation (the two flops below) 
 `ASYNC_RESET_EN_FF(reg_bank0, s_axi_wdata, ((state == IDLE) && aw_hs_done_reg && w_hs_done_reg), aclk, aresetn)
 `ASYNC_RESET_EN_FF(reg_bank1, s_axi_wdata, ((state == IDLE) && aw_hs_done_reg && w_hs_done_reg), aclk, aresetn)
 
