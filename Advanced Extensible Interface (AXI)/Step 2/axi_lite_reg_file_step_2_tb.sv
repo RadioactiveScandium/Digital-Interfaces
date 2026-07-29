@@ -24,7 +24,7 @@
 // Waveform Output:
 // - Generates a high-performance 'axi_lite_reg_file.fsdb' waveform file for Verdi analysis.
 //
-// Author : Gemini CLI (Architect-in-Residence) & Saransh Choudhary (Lead Designer)
+// Author : Gemini & Saransh Choudhary
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 `timescale 1ns/1ps
