@@ -29,6 +29,7 @@ end
 //      -> This is done for both AW and AR as the two channels are independent
 //   2. Blocking the write access if violated and issue a DECERR back to master, else send OKAY 
 //   3. Broadcast garbage value for read access if violated and issue a DECERR back to master, else send OKAY 
+//   4. Added some key System Verilog Assertions 
 //
 // Author : Saransh Choudhary
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,5 +353,68 @@ always_comb begin : READ_STATE_FSM
 
 end : READ_STATE_FSM
 
+//========================================================================================================
+//                                   SYSTEMVERILOG ASSERTIONS (SVA)
+//========================================================================================================
 
+`ifdef ASSERT_ON
+
+// Property 1: Write Response Handshake Stability
+// Once s_axi_bvalid is asserted high, it must remain high and s_axi_bresp must remain stable (unchanged)
+// until the master asserts s_axi_bready to complete the handshake.
+property p_write_response_stability;
+    @(posedge aclk) disable iff (!aresetn)
+    (s_axi_bvalid && !s_axi_bready) |=> (s_axi_bvalid && $stable(s_axi_bresp));
+endproperty
+
+assert_write_response_stability: assert property (p_write_response_stability)
+    else $error("[SVA ERROR] Write Response Handshake Stability Violated! s_axi_bvalid dropped or s_axi_bresp changed value before handshake.");
+
+cover_write_response_stability: cover property (p_write_response_stability);
+
+// Property 2: Read Response Handshake Stability
+// Once s_axi_rvalid goes high, it must remain high and s_axi_rdata/s_axi_rresp must remain stable until 
+// master asserts s_axi_rready to complete the handshake
+property p_read_response_stability;
+    @(posedge aclk) disable iff (!aresetn)
+    (s_axi_rvalid && !s_axi_rready) |=> (s_axi_rvalid && $stable(s_axi_rdata) && $stable(s_axi_rresp));
+endproperty
+
+assert_read_response_stability: assert property (p_read_response_stability)
+    else $error("[SVA ERROR] Read Response Handshake Stability Violated! s_axi_rvalid dropped or s_axi_rresp changed value before handshake.");
+
+cover_read_response_stability: cover property (p_read_response_stability);
+
+// Property 3: Write fault invalidation
+// Any illegal write address strictly results in a DECERR write response
+// The trigger condition is qualified with bvalid to make sure it is checked
+// during only active response phase and bvalid asserted high denotes an
+// active write response phase.
+property p_write_fault_invalidation;
+    @(posedge aclk) disable iff (!aresetn)
+    (s_axi_bvalid && w_addr_fault) |-> (s_axi_bresp == 2'b11);
+endproperty
+
+assert_write_fault_invalidation: assert property (p_write_fault_invalidation)
+    else $error("[SVA ERROR] Write fault invalidation violated! The slave did not return DECERR (value of 2'b11) on s_axi_bresp signal.");
+
+cover_write_fault_invalidation: cover property (p_write_fault_invalidation);
+
+// Property 4: Read fault invalidation
+// Any illegal read address strictly results in a DECERR write response
+// The trigger condition is qualified with rvalid to make sure it is checked
+// during only active response phase and rvalid asserted high denotes an
+// active read response phase.
+property p_read_fault_invalidation;
+    @(posedge aclk) disable iff (!aresetn)
+    (s_axi_rvalid && r_addr_fault) |-> (s_axi_rresp == 2'b11);
+endproperty
+
+assert_read_fault_invalidation: assert property (p_read_fault_invalidation)
+    else $error("[SVA ERROR] Read fault invalidation violated! The slave did not return DECERR (value of 2'b11) on s_axi_bresp signal.");
+
+cover_read_fault_invalidation: cover property (p_read_fault_invalidation);
+
+`endif
+    
 endmodule
