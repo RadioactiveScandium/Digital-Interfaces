@@ -12,7 +12,7 @@
 //      -> This is done for both AW and AR as the two channels are independent
 //   2. Blocking the write access if violated and issue a DECERR back to master, else send OKAY 
 //   3. Broadcast garbage value for read access if violated and issue a DECERR back to master, else send OKAY 
-//   4. Added some key System Verilog Assertions 
+//   4. Added some key System Verilog Assertions, protected by ASSERT_ON macro
 //
 // Author : Saransh Choudhary
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
