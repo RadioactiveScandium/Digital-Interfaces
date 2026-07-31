@@ -29,11 +29,11 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup Bazel
-      uses: bazel-contrib/setup-bazel@v0.13.0
-      with:
-        bazelrc: |
-          build --repository_cache=~/.cache/bazel-repo
+    # - name: Setup Bazel
+    #  uses: bazel-contrib/setup-bazel@v0.13.0
+    #  with:
+    #    bazelrc: |
+    #      build --repository_cache=~/.cache/bazel-repo
 
     - name: Bazel Build All Targets
       run: bazel build //...
