@@ -39,4 +39,4 @@ jobs:
       run: bazel build //...
 
     - name: Print README Content
-      run: bazel run //:print_readme
+      run: bazel build //:print_readme
