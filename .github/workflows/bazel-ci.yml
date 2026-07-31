@@ -1,0 +1,42 @@
+name: Digital Interfaces CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # Job 1: Verifies SystemVerilog code layout and style properties
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # Scans your repository and fails the build if .v or .sv files are unformatted
+    - name: Run Verible Formatter Check
+      uses: chipsalliance/verible-formatter-action@main
+      with:
+        # Fails the pipeline execution if style violations are found
+        fail_on_error: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Job 2: Runs compilation checks on clean configurations
+  bazel-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Bazel
+      uses: bazel-contrib/setup-bazel@v0.13.0
+      with:
+        bazelrc: |
+          build --repository_cache=~/.cache/bazel-repo
+
+    - name: Bazel Build All Targets
+      run: bazel build //...
+
+    - name: Print README Content
+      run: bazel run //:print_readme
