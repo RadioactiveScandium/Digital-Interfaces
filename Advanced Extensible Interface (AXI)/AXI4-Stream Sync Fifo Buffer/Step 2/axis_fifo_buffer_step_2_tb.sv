@@ -20,7 +20,7 @@
 // Waveform Output:
 // - Generates a high-performance 'axis_fifo_buffer.fsdb' waveform file for Verdi analysis.
 //
-// Author : Gemini CLI & Saransh Choudhary (Lead Designer)
+// Author : Gemini & Saransh Choudhary
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module axis_fifo_buffer_tb;
